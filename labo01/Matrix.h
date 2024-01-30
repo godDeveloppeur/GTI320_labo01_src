@@ -225,6 +225,7 @@ namespace gti320
 		_Scalar& operator()(int i, int j)
 		{
 			// TODO implementer
+			assert(i >= 0 && i < this->rows() && j >= 0 && j < this->cols());
 			return this->m_storage.data()[j * this->rows() + i];
 		}
 
@@ -377,6 +378,7 @@ namespace gti320
 		_Scalar operator()(int i, int j) const
 		{
 			// TODO implémenter
+			assert(i >= 0 && i < this->rows() && j >= 0 && j < this->cols());
 			return m_matrix(i + m_i, j + m_j);
 		}
 
@@ -389,6 +391,7 @@ namespace gti320
 		_Scalar& operator()(int i, int j)
 		{
 			// TODO implémenter
+			assert(i >= 0 && i < this->rows() && j >= 0 && j < this->cols());
 			return m_matrix(i + m_i, j + m_j);
 		}
 

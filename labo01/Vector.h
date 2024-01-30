@@ -57,6 +57,19 @@ namespace gti320
 			return *this;
 		}
 
+
+		/**
+		 * Opérateur de copie à partir d'une liste
+		 */
+		Vector& operator=(const _Scalar* arr)
+		{
+			// Implémentation supplémentaire
+			for (int i = 0; i < MatrixBase<_Scalar, _Rows, 1>::size(); i++) {
+				MatrixBase<_Scalar, _Rows, 1>::m_storage.data()[i] = arr[i];
+			}
+			return *this;
+		}
+
 		/**
 		 * Accesseur à une entrée du vecteur (lecture seule)
 		 */
@@ -111,6 +124,51 @@ namespace gti320
 			}
 
 			return sqrt(result);
+		}
+
+		/**
+		 * Retourne la norme de manhattan du vecteur
+		 */
+		inline _Scalar normManhattan() const
+		{
+			// Implémentation supplémentaire
+			_Scalar result = 0.0;
+			for (int i = 0; i < MatrixBase<_Scalar, _Rows, 1>::size(); ++i)
+			{
+				result += abs(MatrixBase<_Scalar, _Rows, 1>::m_storage.data()[i]);
+			}
+
+			return result;
+		}
+
+		/**
+		 * Retourne la norme infinie du vecteur
+		 */
+		inline _Scalar normInfinie() const
+		{
+			// Implémentation supplémentaire
+			_Scalar result = 0.0;
+			for (int i = 0; i < MatrixBase<_Scalar, _Rows, 1>::size(); ++i)
+			{
+				result = std::max(result, abs(MatrixBase<_Scalar, _Rows, 1>::m_storage.data()[i]));
+			}
+
+			return result;
+		}
+
+		/**
+		 * Retourne la norme P du vecteur
+		 */
+		inline _Scalar normP(const int& p) const
+		{
+			// Implémentation supplémentaire
+			_Scalar result = 0.0;
+			for (int i = 0; i < MatrixBase<_Scalar, _Rows, 1>::size(); ++i)
+			{
+				result += std::pow(abs(MatrixBase<_Scalar, _Rows, 1>::m_storage.data()[i]), p);
+			}
+
+			return std::pow(result, 1.0 / p);
 		}
 	};
 }

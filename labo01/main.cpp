@@ -458,7 +458,7 @@ TEST(TestLabo1, Math3D)
  * Test des performance de la multiplication  matrice * vecteur
  * pour de grandes dimensions.
  */
-/*
+
 TEST(TestLabo1, PerformanceMatrixVector)
 {
 	Matrix<double> A(16384, 16384);     // grande matrice avec stockage colonne
@@ -479,13 +479,13 @@ TEST(TestLabo1, PerformanceMatrixVector)
 	EXPECT_TRUE(optimal_t < 0.4 * naive_t)
 		<< "Naive time: " << duration_cast<std::chrono::milliseconds>(naive_t).count() << " ms, "
 		<< "optimized time: " << duration_cast<std::chrono::milliseconds>(optimal_t).count() << " ms";
-}*/
+}
 
 /**
  * Test des performances de l'addition  matrice + matrice
  * pour de grandes dimensions.
  */
-/*
+
 TEST(TestLabo1, PerformanceLargeMatrixMatrix)
 {
 	// deux grandes matrices à stockage par colonnes
@@ -506,7 +506,7 @@ TEST(TestLabo1, PerformanceLargeMatrixMatrix)
 
 	EXPECT_TRUE(optimal_t < 0.4 * naive_t);
 }
-*/
+
 TEST(TestLabo1, Supplementaires)
 {
 	// TODO remplacez le code avec vos propres tests ici
@@ -520,8 +520,9 @@ TEST(TestLabo1, Supplementaires)
 	RowM(3, 3) = 6.3;
 	RowM(4, 3) = 12.3;
 
-	// Test : vérifie le bon fonctionne d'une sous-matrice créer à partir d'une matrice
+	// Test 1: vérifie le bon fonctionne d'une sous-matrice créer à partir d'une matrice
 	SubMatrix<double, Dynamic, Dynamic, RowStorage> SubM(RowM, 2, 2, 3, 2);
+	
 
 	EXPECT_EQ(SubM.rows(), 3);
 	EXPECT_EQ(SubM.cols(), 2);
@@ -531,6 +532,89 @@ TEST(TestLabo1, Supplementaires)
 	EXPECT_DOUBLE_EQ(SubM(1, 1), 6.3);
 	EXPECT_DOUBLE_EQ(SubM(2, 1), RowM(4, 3));
 	EXPECT_DOUBLE_EQ(SubM(2, 1), 12.3);
+
+	// Test 2: vérifie la copie d'une sous-matrice dans une autre sous-matrice
+	SubMatrix<double, Dynamic, Dynamic, RowStorage> SubM2 = SubM;
+	EXPECT_EQ(SubM2.rows(), 3);
+	EXPECT_EQ(SubM2.cols(), 2);
+	EXPECT_DOUBLE_EQ(SubM2(0, 0), SubM(0, 0));
+	EXPECT_DOUBLE_EQ(SubM2(0, 0), 9.5);
+	EXPECT_DOUBLE_EQ(SubM2(1, 1), SubM(1, 1));
+	EXPECT_DOUBLE_EQ(SubM2(1, 1), 6.3);
+
+	
+	// Test 3: vérifie la copie d'une matrice dans une sous-matrice
+	Matrix<double, Dynamic, Dynamic, RowStorage> RowM2(3, 2);
+	RowM2.setZero();
+	RowM2(0, 0) = 44.0;
+	RowM2(1, 1) = 66.0;
+	RowM2(2, 1) = 52.0;
+
+	SubM = RowM2; 
+
+	EXPECT_DOUBLE_EQ(SubM(0, 0), RowM2(0, 0));
+	EXPECT_DOUBLE_EQ(SubM(0, 0), 44.0);
+	EXPECT_DOUBLE_EQ(SubM(1, 0), 0.0);
+	EXPECT_DOUBLE_EQ(SubM(2, 1), RowM2(2, 1));
+	EXPECT_DOUBLE_EQ(SubM(2, 1), 52.0);
+
+	// Test 4: vérifie la création d'une correcte matrice transposée à partir d'une sous-matrice
+	Matrix<double, Dynamic, Dynamic, RowStorage> SubM2T = SubM2.transpose<double, Dynamic, Dynamic, RowStorage>();
+	EXPECT_EQ(SubM2T.rows(), 2);
+	EXPECT_EQ(SubM2T.cols(), 3);
+	EXPECT_DOUBLE_EQ(SubM2T(0, 0), SubM2(0, 0));
+	EXPECT_DOUBLE_EQ(SubM2T(1, 2), SubM2(2, 1));
+
+
+	// Test 5: vérifie la creation de la transposée à partir d'une matrice avec un stockage en colonne
+	Matrix<double, Dynamic, Dynamic, ColumnStorage> ColM(100, 100);
+	ColM.setZero();
+	ColM(0, 0) = 1.0;
+	ColM(10, 5) = 5.0;
+	ColM(11, 6) = 6.0;
+	ColM(12, 7) = 7.0;
+	ColM(12, 5) = 1.0;
+	ColM(11, 5) = 4.0;
+	ColM(99, 99) = 99.0;
+	ColM(10, 33) = 5.0;
+
+	const auto ColMT = ColM.transpose<double, Dynamic, Dynamic, ColumnStorage>();
+	EXPECT_DOUBLE_EQ(ColMT(0, 0), ColM(0, 0));
+	EXPECT_DOUBLE_EQ(ColMT(33, 10), ColM(10, 33));
+
+	// Test 6: vérifie la creation d'une matrice identité à partir d'une matrice et une sous-matrice
+	Matrix< double, Dynamic, Dynamic, ColumnStorage > ColM2I;
+	ColM2I = ColM.block(10, 5, 3, 3);
+	ColM2I.setIdentity();
+
+	EXPECT_DOUBLE_EQ(ColM2I(0, 0), 1.0);
+	EXPECT_DOUBLE_EQ(ColM2I(1, 1), 1.0);
+	EXPECT_DOUBLE_EQ(ColM2I(2, 2), 1.0);
+
+	// Test 7: vérifie que la matrice se redimensionne correctement lorsque les matrices ne sont pas de même taille lors d'une copie
+	Matrix< double, Dynamic, Dynamic, ColumnStorage > ColM3(10, 10);
+	ColM3.setZero();
+	ColM3 = ColM.block(10, 5, 3, 3);
+	EXPECT_EQ(ColM3.rows(), 3);
+	EXPECT_EQ(ColM3.cols(), 3);
+
+	// Test 8: vérifie la création d'un vecteur à partir d'une liste
+	Vector<double> v1(4);
+	double arr[4] = { 1.5, -2.3, 3.7, -4.1 };
+	v1 = arr;
+	EXPECT_DOUBLE_EQ(v1(0), arr[0]);
+	EXPECT_DOUBLE_EQ(v1(1), arr[1]);
+	EXPECT_DOUBLE_EQ(v1(2), arr[2]);
+	EXPECT_DOUBLE_EQ(v1(3), arr[3]);
+
+	// Test 9: vérifie que le calcul de la norme de manhattan du vecteur est bien calculé
+	EXPECT_DOUBLE_EQ(v1.normManhattan(), 11.6);
+
+	// Test 10: vérifie que le calcul de la norme infinie et de sa norme-p du vecteur est bien calculé
+	EXPECT_DOUBLE_EQ(v1.normInfinie(), 4.1);
+	EXPECT_DOUBLE_EQ(v1.normP(3), 5.1313967320559923);
+
+
 }
 
 int main(int argc, char** argv)

@@ -57,6 +57,21 @@ namespace gti320
 			return *this;
 		}
 
+		/**
+		 * Opérateur de copie à partir d'une sous-matrice
+		 */
+		template <typename _OtherScalar, int OtherRows, int _OtherCols, int _OtherStorage>
+		Vector& operator=(const SubMatrix<_OtherScalar, OtherRows, _OtherCols, _OtherStorage>& submatrix)
+		{
+			// Implémentation supplémentaire
+			assert(submatrix.cols() == 1);
+			for (int i = 0; i < MatrixBase<_Scalar, _Rows, 1>::size(); ++i)
+			{
+				MatrixBase<_Scalar, _Rows, 1>::m_storage.data()[i] = submatrix(i, 0);
+			}
+			return *this;
+		}
+
 
 		/**
 		 * Opérateur de copie à partir d'une liste

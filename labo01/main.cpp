@@ -282,6 +282,7 @@ TEST(TestLabo1, MatrixMatrixOperators)
 /**
  * Test pour la multiplication  matrice * vecteur
  */
+
 TEST(TestLabo1, MatrixVectorOperators)
 {
 	// Vecteur à taille dynamique
@@ -323,6 +324,8 @@ TEST(TestLabo1, MatrixVectorOperators)
 /**
  * Opérateurs d'arithmétique vectorielle
  */
+
+
 TEST(TestLabo1, VectorOperators)
 {
 	Vector<double> v(5);
@@ -354,6 +357,7 @@ TEST(TestLabo1, VectorOperators)
 /**
  * Mathématiques 3D
  */
+
 TEST(TestLabo1, Math3D)
 {
 	// Test : norme d'un vecteur de dimension 3
@@ -614,7 +618,16 @@ TEST(TestLabo1, Supplementaires)
 	EXPECT_DOUBLE_EQ(v1.normInfinie(), 4.1);
 	EXPECT_DOUBLE_EQ(v1.normP(3), 5.1313967320559923);
 
+	// Test 11: vérifie la copie d'un vecteur à partir d'un vecteur
+	Matrix< double, Dynamic, Dynamic, ColumnStorage > m1(2, 4);
+	m1.setZero();
+	m1(1, 1) = 12.5;
+	m1(1, 2) = 78.2;
 
+	Vector<double> v2(4);
+	v2 = m1.block(0, 1, 4, 1);
+	EXPECT_DOUBLE_EQ(v2(0), 0.0);
+	EXPECT_DOUBLE_EQ(v2(1), 12.5);
 }
 
 int main(int argc, char** argv)

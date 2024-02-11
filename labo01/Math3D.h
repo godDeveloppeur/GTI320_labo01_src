@@ -22,6 +22,7 @@
 #endif
 
 #include <math.h>
+#include <iostream>
 
 
 namespace gti320 {
@@ -52,6 +53,15 @@ namespace gti320 {
 	{
 		// TODO affecter la valeur 0.0 partout, sauf sur la diagonale principale où c'est 1.0.
 		//      Note: ceci est une redéfinition d'une fonction membre!
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				(*this)(i, j) = 0.0;
+			}
+		}
+
+		for (int i = 0; i < 4; ++i) {
+			(*this)(i, i) = 1.0;
+		}
 	}
 
 	/**
@@ -65,7 +75,30 @@ namespace gti320 {
 	inline Matrix4d Matrix4d::inverse() const
 	{
 		// TODO : implémenter
-		return Matrix4d(); // Pas bon, à changer
+		Matrix4d result;
+		result.setZero();
+
+		Matrix3d rotation;
+		Vector3d translation;
+		Matrix3d rotationInverse;
+		Matrix3d negRotationInverse;
+
+		rotation = this->block(0, 0, 3, 3);
+		translation = this->block(0, 3, 3, 1);
+		rotationInverse = rotation.transpose<double, 3, 3, ColumnStorage>();
+		negRotationInverse = (-1.0 * rotationInverse);
+		translation = negRotationInverse * translation;
+
+		result.block(0, 0, 3, 3) = rotationInverse;
+	
+		for (int i = 0; i < translation.size(); ++i) {
+			result(i, 3) = translation(i);
+		}
+
+		result(3, 3) = 1.0;
+
+
+		return result; 
 	}
 
 	/**
@@ -76,8 +109,7 @@ namespace gti320 {
 	template<>
 	inline Matrix3d Matrix3d::inverse() const
 	{
-		// TODO : implémenter
-		return Matrix3d();
+		return this->transpose<double, 3, 3, ColumnStorage>();
 	}
 
 
@@ -89,7 +121,16 @@ namespace gti320 {
 	Vector<_Scalar, 3> operator*(const Matrix<_Scalar, 4, 4, ColumnStorage>& A, const Vector<_Scalar, 3>& v)
 	{
 		// TODO : implémenter
-		return Vector<_Scalar, 3>(); // pas bon, à changer
+
+		Vector<_Scalar, 3> result;
+		result.setZero();
+
+		// Calcul de la transformation homogène
+		for (int i = 0; i < 3; ++i) {
+			result(i) = A(i, 0) * v(0) + A(i, 1) * v(1) + A(i, 2) * v(2) + A(i, 3);
+		}
+
+		return result;
 	}
 
 
@@ -103,8 +144,55 @@ namespace gti320 {
 	static Matrix<_Scalar, 3, 3> makeRotation(_Scalar x, _Scalar y, _Scalar z)
 	{
 		// TODO : implémenter
+		_Scalar cx = std::cos(x);
+		_Scalar sx = std::sin(x);
+		_Scalar cy = std::cos(y);
+		_Scalar sy = std::sin(y);
+		_Scalar cz = std::cos(z);
+		_Scalar sz = std::sin(z);
 
-		return Matrix<_Scalar, 3, 3>(); //	 pas bon, à changer
+		Matrix<_Scalar, 3, 3> rotation;
+		rotation.setZero();
+
+		// Matrice de rotation autour de l'axe X (Roll)
+		rotation(0, 0) = 1.0;
+		rotation(0, 1) = 0.0;
+		rotation(0, 2) = 0.0;
+		rotation(1, 0) = 0.0;
+		rotation(1, 1) = cx;
+		rotation(1, 2) = -sx;
+		rotation(2, 0) = 0.0;
+		rotation(2, 1) = sx;
+		rotation(2, 2) = cx;
+
+		// Matrice de rotation autour de l'axe Y (Pitch)
+		Matrix<_Scalar, 3, 3> rotationY;
+		rotationY(0, 0) = cy;
+		rotationY(0, 1) = 0.0;
+		rotationY(0, 2) = sy;
+		rotationY(1, 0) = 0.0;
+		rotationY(1, 1) = 1.0;
+		rotationY(1, 2) = 0.0;
+		rotationY(2, 0) = -sy;
+		rotationY(2, 1) = 0.0;
+		rotationY(2, 2) = cy;
+
+		// Matrice de rotation autour de l'axe Z (Yaw)
+		Matrix<_Scalar, 3, 3> rotationZ;
+		rotationZ(0, 0) = cz;
+		rotationZ(0, 1) = -sz;
+		rotationZ(0, 2) = 0.0;
+		rotationZ(1, 0) = sz;
+		rotationZ(1, 1) = cz;
+		rotationZ(1, 2) = 0.0;
+		rotationZ(2, 0) = 0.0;
+		rotationZ(2, 1) = 0.0;
+		rotationZ(2, 2) = 1.0;
+
+		// Produit des trois matrices de rotation
+		rotation = rotationZ * (rotationY * rotation);
+
+		return rotation;
 	}
 
 }

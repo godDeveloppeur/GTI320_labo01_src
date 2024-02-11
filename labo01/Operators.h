@@ -26,7 +26,21 @@ namespace gti320 {
 	Matrix<_Scalar, RowsA, ColsB> operator*(const Matrix<_Scalar, RowsA, ColsA, StorageA>& A, const Matrix<_Scalar, RowsB, ColsB, StorageB>& B)
 	{
 		// TODO implémenter
-		return Matrix<_Scalar, RowsA, ColsB>();
+		assert(A.cols() == B.rows());
+
+		Matrix<_Scalar, RowsA, ColsB> result(A.rows(), B.cols());
+		result.setZero();
+
+		for (int i = 0; i < A.rows(); ++i) {
+			for (int j = 0; j < B.cols(); ++j) {
+				_Scalar sum = 0;
+				for (int k = 0; k < A.cols(); ++k) {
+					sum += A(i, k) * B(k, j);
+				}
+				result(i, j) = sum;
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -40,7 +54,20 @@ namespace gti320 {
 	Matrix<_Scalar, Dynamic, Dynamic> operator*(const Matrix<_Scalar, Dynamic, Dynamic, ColumnStorage>& A, const Matrix<_Scalar, Dynamic, Dynamic, RowStorage>& B)
 	{
 		// TODO : implémenter
-		return Matrix<_Scalar, Dynamic, Dynamic>();
+		assert(A.cols() == B.rows());
+
+		Matrix<_Scalar, Dynamic, Dynamic> result(A.rows(), B.cols());
+		result.setZero();
+
+		for (int k = 0; k < A.cols(); ++k) {
+			for (int j = 0; j < B.cols(); ++j) {
+				for (int i = 0; i < A.rows(); ++i) {
+					result(i, j) += A(i, k) * B(k, j);
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -54,7 +81,20 @@ namespace gti320 {
 	Matrix<_Scalar, Dynamic, Dynamic> operator*(const Matrix<_Scalar, Dynamic, Dynamic, RowStorage>& A, const Matrix<_Scalar, Dynamic, Dynamic, ColumnStorage>& B)
 	{
 		// TODO : implémenter
-		return Matrix<_Scalar, Dynamic, Dynamic>();
+		assert(A.cols() == B.rows());
+
+		Matrix<_Scalar, Dynamic, Dynamic> result(A.rows(), B.cols());
+		result.setZero();
+
+		for (int i = 0; i < A.rows(); ++i) {
+			for (int j = 0; j < B.cols(); ++j) {
+				for (int k = 0; k < A.cols(); ++k) {
+					result(i, j) += A(i, k) * B(k, j);
+				}
+			}
+		}
+
+		return result;
 	}
 
 
@@ -65,7 +105,16 @@ namespace gti320 {
 	Matrix<_Scalar, Rows, Cols> operator+(const Matrix<_Scalar, Rows, Cols, StorageA>& A, const Matrix<_Scalar, Rows, Cols, StorageB>& B)
 	{
 		// TODO : implémenter
-		return Matrix<_Scalar, Rows, Cols>();
+		Matrix<_Scalar, Rows, Cols> result(A.rows(), B.cols());
+		result.setZero();
+
+		for (int i = 0; i < A.rows(); ++i) {
+			for (int j = 0; j < B.cols(); ++j) {
+				result(i, j) = A(i, j) + B(i, j);
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -78,7 +127,20 @@ namespace gti320 {
 	Matrix<_Scalar, Dynamic, Dynamic> operator+(const Matrix<_Scalar, Dynamic, Dynamic, ColumnStorage>& A, const Matrix<_Scalar, Dynamic, Dynamic, ColumnStorage>& B)
 	{
 		// TODO : implémenter
-		return Matrix<_Scalar, Dynamic, Dynamic>();
+		assert(A.rows() == B.rows() && A.cols() == B.cols());
+
+		int numRows = A.rows();
+		int numCols = A.cols();
+
+		Matrix<_Scalar, Dynamic, Dynamic> result(numRows, numCols);
+		result.setZero();
+
+		for (int j = 0; j < numCols; ++j) {
+			for (int i = 0; i < numRows; ++i) {
+				result(i, j) = A(i, j) + B(i, j);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -91,7 +153,21 @@ namespace gti320 {
 	Matrix<_Scalar, Dynamic, Dynamic, RowStorage> operator+(const Matrix<_Scalar, Dynamic, Dynamic, RowStorage>& A, const Matrix<_Scalar, Dynamic, Dynamic, RowStorage>& B)
 	{
 		// TODO : implémenter
-		return Matrix<_Scalar, Dynamic, Dynamic, RowStorage>();
+		assert(A.rows() == B.rows() && A.cols() == B.cols());
+
+		int numRows = A.rows();
+		int numCols = A.cols();
+
+		Matrix<_Scalar, Dynamic, Dynamic, RowStorage> result(numRows, numCols);
+		result.setZero();
+
+		for (int i = 0; i < numRows; ++i) {
+			for (int j = 0; j < numCols; ++j) {
+				result(i, j) = A(i, j) + B(i, j);
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -104,7 +180,15 @@ namespace gti320 {
 	Matrix<_Scalar, _Rows, _Cols, ColumnStorage> operator*(const _Scalar& a, const Matrix<_Scalar, _Rows, _Cols, ColumnStorage>& A)
 	{
 		// TODO : implémenter
-		return Matrix<_Scalar, Dynamic, Dynamic>();
+		Matrix<_Scalar, _Rows, _Cols, ColumnStorage> result(A.rows(), A.cols());
+		result.setZero();
+
+		for (int j = 0; j < A.cols(); ++j) {
+			for (int i = 0; i < A.rows(); ++i) {
+				result(i, j) = a * A(i, j);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -117,7 +201,15 @@ namespace gti320 {
 	Matrix<_Scalar, _Rows, _Cols, RowStorage> operator*(const _Scalar& a, const Matrix<_Scalar, _Rows, _Cols, RowStorage>& A)
 	{
 		// TODO : implémenter
-		return Matrix<_Scalar, Dynamic, Dynamic, RowStorage>();
+		Matrix<_Scalar, _Rows, _Cols, RowStorage> result(A.rows(), A.cols());
+		result.setZero();
+
+		for (int i = 0; i < A.rows(); ++i) {
+			for (int j = 0; j < A.cols(); ++j) {
+				result(i, j) = a * A(i, j);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -130,7 +222,20 @@ namespace gti320 {
 	Vector<_Scalar, _Rows> operator*(const Matrix<_Scalar, _Rows, _Cols, RowStorage>& A, const Vector<_Scalar, _Cols>& v)
 	{
 		// TODO : implémenter
-		return Vector<_Scalar, _Rows>();
+		assert(A.cols() == v.size());
+
+		Vector<_Scalar, _Rows> result(A.cols());
+		result.setZero();
+
+		for (int i = 0; i < A.rows(); ++i) {
+			_Scalar sum = 0;
+			for (int j = 0; j < A.cols(); ++j) {
+				sum += A(i, j) * v(j);
+			}
+			result(i) = sum;
+		}
+
+		return result;
 	}
 
 	/**
@@ -143,7 +248,18 @@ namespace gti320 {
 	Vector<_Scalar, _Rows> operator*(const Matrix<_Scalar, _Rows, _Cols, ColumnStorage>& A, const Vector<_Scalar, _Cols>& v)
 	{
 		// TODO : implémenter
-		return Vector<_Scalar, _Rows>();
+		assert(A.cols() == v.size());
+
+		Vector<_Scalar, _Rows> result(A.cols());
+		result.setZero();
+
+		for (int j = 0; j < A.cols(); ++j) {
+			for (int i = 0; i < A.rows(); ++i) {
+				result(i) += A(i, j) * v(j);
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -153,7 +269,14 @@ namespace gti320 {
 	Vector<_Scalar, _Rows> operator*(const _Scalar& a, const Vector<_Scalar, _Rows>& v)
 	{
 		// TODO : implémenter
-		return Vector<_Scalar, _Rows>();
+		Vector<_Scalar, _Rows> result(v.size());
+		result.setZero();
+
+		for (int i = 0; i < v.size(); ++i) {
+			result(i) = a * v(i);
+		}
+
+		return result;
 	}
 
 
@@ -164,7 +287,16 @@ namespace gti320 {
 	Vector<_Scalar, _RowsA> operator+(const Vector<_Scalar, _RowsA>& a, const Vector<_Scalar, _RowsB>& b)
 	{
 		// TODO : implémenter
-		return Vector<_Scalar, _RowsA>();
+		assert(a.size() == b.size());
+
+		Vector<_Scalar, _RowsA> result(a.size());
+		result.setZero();
+
+		for (int i = 0; i < a.size(); ++i) {
+			result(i) = a(i) + b(i);
+		}
+
+		return result;
 	}
 
 	/**
@@ -174,6 +306,15 @@ namespace gti320 {
 	Vector<_Scalar, _RowsA> operator-(const Vector<_Scalar, _RowsA>& a, const Vector<_Scalar, _RowsB>& b)
 	{
 		// TODO : implémenter
-		return Vector<_Scalar, _RowsA>();
+		assert(a.size() == b.size());
+
+		Vector<_Scalar, _RowsA> result(a.size());
+		result.setZero();
+
+		for (int i = 0; i < a.size(); ++i) {
+			result(i) = a(i) - b(i);
+		}
+
+		return result;
 	}
 }

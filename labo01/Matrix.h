@@ -124,11 +124,11 @@ namespace gti320
 
 			Matrix<_OtherScalar, _OtherCols, _OtherRows, _OtherStorage> result(this->cols(), this->rows());
 
-			for (int i = 0; i < this->cols(); ++i)
+			for (int j = 0; j < this->cols(); ++j)
 			{
-				for (int j = 0; j < this->rows(); ++j)
+				for (int i = 0; i < this->rows(); ++i)
 				{
-					result(i, j) = (*this)(j, i);
+					result(j, i) = (*this)(i, j);
 				}
 			}
 
@@ -216,7 +216,7 @@ namespace gti320
 		{
 			// TODO implementer
 			assert(i >= 0 && i < this->rows() && j >= 0 && j < this->cols());
-			return this->m_storage.data()[j * this->rows() + i];
+			return this->m_storage.data()[i * this->cols() + j];
 		}
 
 		/**
@@ -226,7 +226,7 @@ namespace gti320
 		{
 			// TODO implementer
 			assert(i >= 0 && i < this->rows() && j >= 0 && j < this->cols());
-			return this->m_storage.data()[j * this->rows() + i];
+			return this->m_storage.data()[i * this->cols() + j];
 		}
 
 		/**
@@ -256,11 +256,11 @@ namespace gti320
 
 			Matrix<_Scalar, _ColsAtCompile, _RowsAtCompile, ColumnStorage> result(this->cols(), this->rows());
 
-			for (int i = 0; i < this->cols(); ++i)
+			for (int i = 0; i < this->rows(); ++i)
 			{
-				for (int j = 0; j < this->rows(); ++j)
+				for (int j = 0; j < this->cols(); ++j)
 				{
-					result(i, j) = (*this)(j, i);
+					result(j, i) = (*this)(i, j);
 				}
 			}
 
@@ -368,6 +368,7 @@ namespace gti320
 			}
 			return *this;
 		}
+		
 
 		/**
 		 * Accesseur aux entrées de la sous-matrice (lecture seule)
@@ -405,11 +406,11 @@ namespace gti320
 
 			Matrix<_OtherScalar, _OtherCols, _OtherRows, _OtherStorage> result(this->cols(), this->rows());
 
-			for (int i = 0; i < this->cols(); ++i)
+			for (int j = 0; j < this->cols(); ++j)
 			{
-				for (int j = 0; j < this->rows(); ++j)
+				for (int i = 0; i < this->rows(); ++i)
 				{
-					result(i, j) = (*this)(j, i);
+					result(j, i) = (*this)(i, j);
 				}
 			}
 

@@ -171,6 +171,75 @@ namespace gti320 {
 	}
 
 	/**
+	 * Addition : Matrice - Matrice (générique)
+	 * 
+	 */
+	template <typename _Scalar, int Rows, int Cols, int StorageA, int StorageB>
+	Matrix<_Scalar, Rows, Cols> operator-(const Matrix<_Scalar, Rows, Cols, StorageA>& A, const Matrix<_Scalar, Rows, Cols, StorageB>& B)
+	{
+		// Implémentation supplémentaire
+		Matrix<_Scalar, Rows, Cols> result(A.rows(), B.cols());
+		result.setZero();
+
+		for (int i = 0; i < A.rows(); ++i) {
+			for (int j = 0; j < B.cols(); ++j) {
+				result(i, j) = A(i, j) - B(i, j);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Addition : Matrice (colonne) - Matrice (colonne)
+	 *
+	 */
+	template <typename _Scalar>
+	Matrix<_Scalar, Dynamic, Dynamic> operator-(const Matrix<_Scalar, Dynamic, Dynamic, ColumnStorage>& A, const Matrix<_Scalar, Dynamic, Dynamic, ColumnStorage>& B)
+	{
+		// Implémentation supplémentaire
+		assert(A.rows() == B.rows() && A.cols() == B.cols());
+
+		int numRows = A.rows();
+		int numCols = A.cols();
+
+		Matrix<_Scalar, Dynamic, Dynamic> result(numRows, numCols);
+		result.setZero();
+
+		for (int j = 0; j < numCols; ++j) {
+			for (int i = 0; i < numRows; ++i) {
+				result(i, j) = A(i, j) - B(i, j);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Addition : Matrice (ligne) - Matrice (ligne)
+	 *
+	 */
+	template <typename _Scalar>
+	Matrix<_Scalar, Dynamic, Dynamic, RowStorage> operator-(const Matrix<_Scalar, Dynamic, Dynamic, RowStorage>& A, const Matrix<_Scalar, Dynamic, Dynamic, RowStorage>& B)
+	{
+		// Implémentation supplémentaire
+		assert(A.rows() == B.rows() && A.cols() == B.cols());
+
+		int numRows = A.rows();
+		int numCols = A.cols();
+
+		Matrix<_Scalar, Dynamic, Dynamic, RowStorage> result(numRows, numCols);
+		result.setZero();
+
+		for (int i = 0; i < numRows; ++i) {
+			for (int j = 0; j < numCols; ++j) {
+				result(i, j) = A(i, j) - B(i, j);
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Multiplication  : Scalaire * Matrice (colonne)
 	 *
 	 * Spécialisation de l'opérateur de multiplication par un scalaire pour le

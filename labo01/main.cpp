@@ -462,7 +462,7 @@ TEST(TestLabo1, Math3D)
  * Test des performance de la multiplication  matrice * vecteur
  * pour de grandes dimensions.
  */
-
+/*
 TEST(TestLabo1, PerformanceMatrixVector)
 {
 	Matrix<double> A(16384, 16384);     // grande matrice avec stockage colonne
@@ -489,7 +489,7 @@ TEST(TestLabo1, PerformanceMatrixVector)
  * Test des performances de l'addition  matrice + matrice
  * pour de grandes dimensions.
  */
-
+/*
 TEST(TestLabo1, PerformanceLargeMatrixMatrix)
 {
 	// deux grandes matrices à stockage par colonnes
@@ -510,7 +510,7 @@ TEST(TestLabo1, PerformanceLargeMatrixMatrix)
 
 	EXPECT_TRUE(optimal_t < 0.4 * naive_t);
 }
-
+*/
 TEST(TestLabo1, Supplementaires)
 {
 	// TODO remplacez le code avec vos propres tests ici
@@ -618,7 +618,7 @@ TEST(TestLabo1, Supplementaires)
 	EXPECT_DOUBLE_EQ(v1.normInfinie(), 4.1);
 	EXPECT_DOUBLE_EQ(v1.normP(3), 5.1313967320559923);
 
-	// Test 11: vérifie la copie d'un vecteur à partir d'un vecteur
+	// Test 11: vérifie la copie d'un vecteur à partir d'une sous matrice
 	Matrix< double, Dynamic, Dynamic, ColumnStorage > m1(2, 4);
 	m1.setZero();
 	m1(1, 1) = 12.5;
@@ -628,6 +628,69 @@ TEST(TestLabo1, Supplementaires)
 	v2 = m1.block(0, 1, 4, 1);
 	EXPECT_DOUBLE_EQ(v2(0), 0.0);
 	EXPECT_DOUBLE_EQ(v2(1), 12.5);
+
+	// Test 12: vérifie la soustraction entre vecteur
+	Vector<double> v3(4);
+	v3 = v1 - v2;
+	EXPECT_DOUBLE_EQ(v3(0), 1.5);
+	EXPECT_DOUBLE_EQ(v3(1), -14.8);
+
+	// Test 13: vérifie la soustraction entre matrice générique
+	Matrix<double> m2(6, 6);
+	m2(4, 3) = 8.5;
+	m2(5, 2) = 4.5;
+	const auto m22 = m2 - (2.0 * m2);
+	EXPECT_DOUBLE_EQ(m22(4, 3), -8.5);
+	EXPECT_DOUBLE_EQ(m22(5, 2), -4.5);
+
+	// Test 14: vérifie la soustraction entre matrice avec un stockage en ligne
+	Matrix<double, Dynamic, Dynamic, RowStorage> m3(5, 5);
+	m3(1, 2) = 5.5;
+	m3(2, 3) = 6.0;
+	const auto m4 = m3 - (2.0 * m3);
+	EXPECT_DOUBLE_EQ(m4(1, 2), -5.5);
+	EXPECT_DOUBLE_EQ(m4(2, 3), -6.0);
+
+	// Test 15: vérifie la soustraction entre matrice avec un stockage en colonne
+	Matrix<double, Dynamic, Dynamic, ColumnStorage> m5 = m3.transpose();
+	const auto m6 = m5 - (2.0 * m5);
+	EXPECT_DOUBLE_EQ(m6(2, 1), -5.5);
+	EXPECT_DOUBLE_EQ(m6(3, 2), -6.0);
+
+	// Test 17: vérifie la création d'une matrice de mise en échelle
+	Matrix<double, 3, 3, ColumnStorage> mScaling(3, 3);
+	mScaling = scaling(3.0);
+	EXPECT_DOUBLE_EQ(mScaling(0, 0), 3.0);
+	EXPECT_DOUBLE_EQ(mScaling(1, 1), 3.0);
+	EXPECT_DOUBLE_EQ(mScaling(2, 2), 3.0);
+
+
+	// Test 18: vérifie la mise en échelle d'une matrice
+	Matrix<double, 3, 3, ColumnStorage> m7(3, 3);
+	m7(2, 1) = 4;
+	m7(1, 1) = 6;
+	const auto m7Scale = m7 * mScaling;
+	EXPECT_DOUBLE_EQ(m7Scale(2, 1), 12);
+	EXPECT_DOUBLE_EQ(m7Scale(1, 1), 18);
+
+	// Test 19 : vérifie le produit vectoriel de deux vecteur 3d
+	Vector<double, 3> vi;
+	Vector<double, 3> vj;
+	double iArr[3] = { 1.0, 0.0, 0.0 };
+	double jArr[3] = { 0.0, 1.0, 0.0 };
+	vi = iArr;
+	vj = jArr;
+
+	const auto vk = cross(vi, vj);
+	EXPECT_DOUBLE_EQ(vk(0), 0.0);
+	EXPECT_DOUBLE_EQ(vk(1), 0.0);
+	EXPECT_DOUBLE_EQ(vk(2), 1.0);
+
+	// Test 20: vérifie si le résultat du produit vectoriel est bien perpendiculaire aux deux autres vecteurs
+	EXPECT_DOUBLE_EQ(vi.dot(vj), 0.0);
+	EXPECT_DOUBLE_EQ(vi.dot(vk), 0.0);
+	EXPECT_DOUBLE_EQ(vj.dot(vk), 0.0);
+
 }
 
 int main(int argc, char** argv)

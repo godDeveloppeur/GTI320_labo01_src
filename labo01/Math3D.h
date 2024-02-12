@@ -81,13 +81,13 @@ namespace gti320 {
 		Matrix3d rotation;
 		Vector3d translation;
 		Matrix3d rotationInverse;
-		Matrix3d negRotationInverse;
+		Vector3d translationInverse;
 
 		rotation = this->block(0, 0, 3, 3);
 		translation = this->block(0, 3, 3, 1);
 		rotationInverse = rotation.transpose<double, 3, 3, ColumnStorage>();
-		negRotationInverse = (-1.0 * rotationInverse);
-		translation = negRotationInverse * translation;
+		translationInverse = (-1.0 * translation);
+		translation = rotationInverse * translationInverse;
 
 		result.block(0, 0, 3, 3) = rotationInverse;
 	
@@ -129,6 +129,43 @@ namespace gti320 {
 		for (int i = 0; i < 3; ++i) {
 			result(i) = A(i, 0) * v(0) + A(i, 1) * v(1) + A(i, 2) * v(2) + A(i, 3);
 		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * Création de la matrice 3d de mise à echelle
+	 */
+	template <typename _Scalar>
+	Matrix3d scaling(const _Scalar scale)
+	{
+		// Implémentation supplémentaire
+
+		Matrix3d result;
+		result.setZero();
+
+		for (int i = 0; i < 3; ++i) {
+			result(i, i) = scale;
+		}
+
+		return result;
+	}
+
+	/**
+	 *
+	 * Produit vectoriel de deux vecteur 3d
+	 */
+	template <typename _Scalar>
+	Vector3d cross(const Vector<_Scalar, 3>& v1, const Vector<_Scalar, 3>& v2)
+	{
+		// Implémentation supplémentaire
+		Vector<_Scalar, 3> result;
+		result.setZero();
+
+		result(0) = v1(1) * v2(2) - v1(2) * v2(1);
+		result(1) = v1(2) * v2(0) - v1(0) * v2(2);
+		result(2) = v1(0) * v2(1) - v1(1) * v2(0);
 
 		return result;
 	}

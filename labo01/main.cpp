@@ -462,7 +462,7 @@ TEST(TestLabo1, Math3D)
  * Test des performance de la multiplication  matrice * vecteur
  * pour de grandes dimensions.
  */
-/*
+
 TEST(TestLabo1, PerformanceMatrixVector)
 {
 	Matrix<double> A(16384, 16384);     // grande matrice avec stockage colonne
@@ -489,7 +489,7 @@ TEST(TestLabo1, PerformanceMatrixVector)
  * Test des performances de l'addition  matrice + matrice
  * pour de grandes dimensions.
  */
-/*
+
 TEST(TestLabo1, PerformanceLargeMatrixMatrix)
 {
 	// deux grandes matrices à stockage par colonnes
@@ -510,7 +510,7 @@ TEST(TestLabo1, PerformanceLargeMatrixMatrix)
 
 	EXPECT_TRUE(optimal_t < 0.4 * naive_t);
 }
-*/
+
 TEST(TestLabo1, Supplementaires)
 {
 	// TODO remplacez le code avec vos propres tests ici
